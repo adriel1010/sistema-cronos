@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Conferência</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+			<h:form id="formTombamento">
+				<div class="ui-fluid">
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<label>Selecione O inventário *</label>
+							<p:autoComplete id="inventario" dropdown="true"
+								scrollHeight="170" value="#{conferenciaMB.inventario}"
+								completeMethod="#{conferenciaMB.completarInventario}"
+								forceSelection="true" converter="#{converteInventario}"
+								var="serv" itemLabel="#{serv.descricao}" itemValue="#{serv}"
+								required="true"
+								requiredMessage="O campo inventario não deve ser nulo">
+
+								<p:ajax event="itemSelect"
+									listener="#{conferenciaMB.completaLocalInventario()}"
+									update="local" />
+
+							</p:autoComplete>
+
+
+						</div>
+
+
+						<div class="col-md-4">
+							<label></label>
+
+						</div>
+
+					</div>
+
+
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<label>Selecione a Localidade *</label>
+							<p:autoComplete id="local" dropdown="true" scrollHeight="170"
+								value="#{conferenciaMB.localInventarioSelecionado}"
+								completeMethod="#{conferenciaMB.completarLocal}"
+								forceSelection="true" converter="#{converteLocalInventario}"
+								var="serv" itemLabel="#{serv.local.descricao}"
+								itemValue="#{serv}" required="true"
+								requiredMessage="O campo Local não deve ser nulo">
+
+								<p:ajax event="itemSelect"
+									listener="#{conferenciaMB.carregarListaEquipamentos()}"
+									update=":frmTabela" />
+
+							</p:autoComplete>
+
+						</div>
+
+						<div class="col-md-4">
+							<label></label>
+
+						</div>
+
+					</div>
+
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<label>Pesquisar pelo tombamento / descrição</label>
+							<p:inputText title="tombamento" alt="tombamento"
+								styleClass="col-md-12"
+								value="#{conferenciaMB.tombamento.codigo}" />
+
+						</div>
+
+						<div class="col-md-2">
+							<label> </label>
+							<p:commandButton value="Pesquisar" alt="Sim"
+								styleClass="ui-priority-primary"
+								actionListener="#{conferenciaMB.buscarTombamento()}"
+								update=":frmTabela :dlgInformacao :formTombamento" />
+
+						</div>
+
+						<div class="col-md-2">
+							<label> </label>
+
+
+						</div>
+
+					</div>
+
+
+
+					<div class="col-md-12">
+
+						<div class="col-md-8">
+							<label>Equipamento</label>
+							<p:inputText title="Equipamento" alt="Equipamento"
+								styleClass="col-md-12" readonly="true"
+								value="#{conferenciaMB.tombamento.equipamento.descricao}" />
+
+						</div>
+
+						<div class="clearfix"></div>
+
+
+
+
+
+						<div class="col-md-4">
+							<label>Estado Conservação </label>
+							<p:selectOneMenu
+								value="#{conferenciaMB.equipamentoInventario.estado}">
+								<f:selectItems value="#{conferenciaMB.estadoConservacao}" />
+							</p:selectOneMenu>
+
+						</div>
+
+						<div class="col-md-4">
+							<label>Trocar Etiqueta: </label>
+
+							<p:selectOneRadio id="CertInterno"
+								value="#{conferenciaMB.equipamentoInventario.trocarEtiqueta}">
+								<f:selectItem itemLabel="Sim" itemValue="true" />
+								<f:selectItem itemLabel="Não" itemValue="false" />
+
+
+
+							</p:selectOneRadio>
+
+						</div>
+
+						<div class="col-md-2">
+							<label> </label>
+							<p:commandButton value="Salvar" alt="Sim"
+								styleClass="ui-priority-primary"
+								actionListener="#{conferenciaMB.salvarEquipamento()}"
+								update=":frmTabela :dlgInformacao :formTombamento" />
+
+						</div>
+
+						<div class="col-md-2">
+							<label> </label>
+
+
+						</div>
+
+
+
+					</div>
+
+
+					<div class="col-md-12">
+						<small>Campos obrigatórios *</small>
+					</div>
+				</div>
+
+			</h:form>
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="10" paginator="true"
+						value="#{conferenciaMB.listEquipamentoInventario}"
+						paginatorPosition="bottom"
+						emptyMessage="Nenhum Equipamento Conferido Para Esse Local"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+
+						<p:column headerText="Inventário">
+							<h:outputText value="#{obj.localInventario.inventario.descricao}" />
+						</p:column>
+
+						<p:column headerText="Localidade">
+							<h:outputText value="#{obj.localInventario.local.descricao}" />
+						</p:column>
+
+						<p:column headerText="Equipamento"
+							filterBy="#{obj.tombamento.equipamento.descricao}"
+							sortBy="#{obj.tombamento.equipamento.descricao}">
+							<h:outputText value="#{obj.tombamento.equipamento.descricao}" />
+						</p:column>
+
+						<p:column headerText="Tombamento"
+							filterBy="#{obj.tombamento.codigo}"
+							sortBy="#{obj.tombamento.codigo}">
+							<h:outputText value="#{obj.tombamento.codigo}" />
+						</p:column>
+
+						<p:column headerText="Estado Conservação">
+							<h:outputText value="#{obj.estado}" />
+						</p:column>
+
+						<p:column headerText="Data Conferência">
+							<h:outputText value="#{obj.dataConferencia}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Remover" style="width:90px">
+							<p:commandButton alt="excluir" styleClass="btn btn-block"
+								update=":dlgInformacao :frmTabela" icon="ui-icon-trash"
+								actionListener="#{conferenciaMB.inativar(obj)}">
+								<p:confirm header="Confirmação" message="Deseja excluir?" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+
+
+
+
+
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Equipamento" widgetVar="dlgEquipamento"
+				modal="true" responsive=" true" width="60%" id="dlgEquipamento"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+
+				<h:form id="frmModalSalvar">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>Descrição *</label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12"
+								value="#{equipamentoMB.equipamento.descricao}" />
+						</div>
+						<div class="col-md-12">
+							<small>Campos obrigatórios *</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							actionListener="#{equipamentoMB.salvar()}"
+							update=":frmTabela :dlgInformacao" />
+
+					</div>
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG SALVAR -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

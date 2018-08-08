@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Aluno</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃƒO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton actionListener="#{alunoMB.criarNovoObjetoAluno()}"
+						value="Cadastrar" id="btnCadastrar"
+						update=":frmModalSalvar :frmModalSalvarCurso :frmModalCurso"
+						onclick="PF('dlgAluno').show(); PF('dlgAluno').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃƒO CADASTRAR -->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+
+			<p:wizard backLabel="Anterior" nextLabel="Próximo">
+				<p:tab id="ativo" title="Ativos">
+					<p:panel header="Ativos">
+						<h:panelGrid columns="2" cellpadding="10">
+							<p:dataTable id="tabela" value="#{alunoMB.alunosAtivos}"
+								resizableColumns="true" var="obj" reflow="true" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								emptyMessage="Nenhum aluno cadastrada"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+								<p:column headerText="Ver" style="width:50px">
+									<p:commandButton update="frmDetalhesAluno"
+										styleClass="btn btn-block" title="Ver" alt="detlhes aluno"
+										icon="ui-icon-search" oncomplete="PF('dlgDetalhes').show()">
+										<f:setPropertyActionListener value="#{obj}"
+											target="#{alunoMB.movimentacao}" />
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Nome"
+									sortBy="#{obj.alunoTurma.aluno.nome}"
+									filterBy="#{obj.alunoTurma.aluno.nome}"
+									filterMatchMode="contains">
+									<h:outputText value="#{obj.alunoTurma.aluno.nome}" />
+								</p:column>
+								<p:column headerText="Turma"
+									sortBy="#{obj.alunoTurma.aluno.nome}"
+									filterBy="#{obj.alunoTurma.turma.descricao}"
+									filterMatchMode="contains">
+									<h:outputText value="#{obj.alunoTurma.turma.abreviacaoTurma}" />
+								</p:column>
+								<p:column headerText="Ra" sortBy="#{obj.alunoTurma.ra}"
+									filterBy="#{obj.alunoTurma.ra}" filterMatchMode="contains">
+									<h:outputText value="#{obj.alunoTurma.ra}" />
+								</p:column>
+
+								<p:column headerText="Data Mudança">
+									<h:outputText value="#{obj.dataMovimentacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Alterar" style="width:68px">
+									<p:commandButton icon="ui-icon-pencil"
+										styleClass="btn btn-block"
+										actionListener="#{alunoMB.alterar(obj)}"
+										onclick="PF('dlgAlunoEditarDados').show();"
+										update="frmModalSalvarEditarDados" />
+								</p:column>
+
+								<p:column headerText="Data" style="width:68px">
+									<p:commandButton icon="ui-icon-pencil"
+										styleClass="btn btn-block"
+										actionListener="#{alunoMB.alterarDataMudanca(obj)}"
+										onclick="PF('dlgAlunoEditarData').show();"
+										update="frmModalSalvarEditarData" />
+								</p:column>
+
+
+								<p:column headerText="Curso" style="width:68px">
+									<p:commandButton icon="ui-icon-pencil"
+										actionListener="#{alunoMB.alterar(obj)}"
+										styleClass="btn btn-block"
+										oncomplete="PF('dlgAlunoCursoEditar').show();"
+										update=":frmModalEditarCurso" />
+								</p:column>
+								<p:column headerText="Senha" style="width:68px">
+									<p:commandButton icon="ui-icon-pencil"
+										styleClass="btn btn-block"
+										actionListener="#{alunoMB.alterar(obj)}"
+										onclick="PF('dlgAlunoEditarSenha').show();"
+										update="frmModalEditarSenha">
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Excluir" style="width:68px">
+									<p:commandButton actionListener="#{alunoMB.inativar(obj)}"
+										icon="ui-icon-trash" title="Excluir"
+										styleClass="btn btn-block" update="frmTabela :dlgInformacao"
+										alt="Excluir">
+										<p:confirm header="Confirmação"
+											message="Ao excluir o aluno, ele será desvinculado de todos os cursos, deseja excluir?" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="inativos" title="Inativos">
+					<p:panel header="Inativos">
+						<h:panelGrid columns="2" cellpadding="10">
+							<p:dataTable id="tabela2" value="#{alunoMB.alunosTrancados}"
+								resizableColumns="true" var="obj2" reflow="true" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								emptyMessage="Nenhum aluno inativo"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+								<p:column headerText="Ver" style="width:50px">
+									<p:commandButton update="frmDetalhesAluno"
+										styleClass="btn btn-block" title="Ver" alt="detlhes aluno"
+										icon="ui-icon-search" oncomplete="PF('dlgDetalhes').show()">
+										<f:setPropertyActionListener value="#{obj2}"
+											target="#{alunoMB.movimentacao}" />
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Nome"
+									sortBy="#{obj2.alunoTurma.aluno.nome}"
+									filterBy="#{obj2.alunoTurma.aluno.nome}"
+									filterMatchMode="contains">
+									<h:outputText value="#{obj2.alunoTurma.aluno.nome}" />
+								</p:column>
+								<p:column headerText="Turma"
+									sortBy="#{obj2.alunoTurma.aluno.nome}"
+									filterBy="#{obj2.alunoTurma.turma.descricao}"
+									filterMatchMode="contains">
+									<h:outputText value="#{obj2.alunoTurma.turma.abreviacaoTurma}" />
+								</p:column>
+								<p:column headerText="Ra" sortBy="#{obj2.alunoTurma.ra}"
+									filterBy="#{obj2.alunoTurma.ra}" filterMatchMode="contains">
+									<!-- esse vai bugar -->
+									<h:outputText value="#{obj2.alunoTurma.ra}" />
+								</p:column>
+								<p:column headerText="Situação">
+									<h:outputText value="Ativo" rendered="#{obj2.situacao==1}" />
+									<h:outputText value="Trancamento"
+										rendered="#{obj2.situacao==2}" />
+									<h:outputText value="Cancelamento"
+										rendered="#{obj2.situacao==3}" />
+									<h:outputText value="Abandono" rendered="#{obj2.situacao==4}" />
+									<h:outputText value="Concluiu" rendered="#{obj2.situacao==5}" />
+								</p:column>
+								<p:column headerText="Data Mudança">
+									<h:outputText value="#{obj2.dataMovimentacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Excluir" style="width:80px">
+									<p:commandButton actionListener="#{alunoMB.inativar(obj2)}"
+										icon="ui-icon-trash" title="Excluir"
+										styleClass="btn btn-block" update="frmTabela :dlgInformacao"
+										alt="Excluir">
+										<p:confirm header="Confirmação" message="Deseja inativar?" />
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Ativar" style="width:95px">
+									<p:commandButton title="Ativar" alt="Ativar"
+										styleClass="btn btn-block" onclick="PF('dlgAtivar').show();"
+										icon="ui-icon-unlocked">
+										<f:setPropertyActionListener value="#{obj2}"
+											target="#{alunoMB.movimentacao}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Aluno" widgetVar="dlgAluno" modal="true"
+		id="dlgAluno" closable="true" closeOnEscape="true" resizable="false"
+		draggable="false" responsive="true" width="65%">
+		<h:form id="frmModalSalvar">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Nome *</label>
+					<p:inputText title="Nome" styleClass="col-md-12" id="nome"
+						value="#{alunoMB.aluno.nome}" alt="nome" required="true"
+						requiredMessage="O campo nome não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>E-mail *</label>
+					<p:inputText title="E-mail" styleClass="col-md-12" id="email"
+						alt="nome" value="#{alunoMB.aluno.usuario}" required="true"
+						requiredMessage="O campo e-mail não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-4">
+					<label>CPF *</label>
+					<p:inputMask title="cpf" styleClass="col-md-12" id="cpf" alt="cpf"
+						value="#{alunoMB.aluno.cpf}" required="true" mask="999.999.999-99"
+						requiredMessage="O campo cpf não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>RG *</label>
+					<p:inputText title="rg" styleClass="col-md-12" id="rg" alt="rg"
+						value="#{alunoMB.aluno.rg}" required="true"
+						requiredMessage="O campo rg não deve ser nulo" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Orgão emissor *</label>
+					<p:inputText title="emissor" styleClass="col-md-12" id="emissor"
+						alt="emissor" value="#{alunoMB.aluno.orgaoRg}" required="true"
+						requiredMessage="O campo orgão emissor não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-4">
+					<label>Sexo*</label>
+					<p:selectOneRadio id="sexoCadastra" value="#{alunoMB.aluno.sexo}">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+
+						<f:selectItem itemLabel="Feminino" itemValue="F" />
+					</p:selectOneRadio>
+				</div>
+				<div class="col-md-4">
+					<label>Natalidade *</label>
+					<p:inputText title="natalidade" styleClass="col-md-12"
+						id="natalidade" alt="natalidade"
+						value="#{alunoMB.aluno.natalidade}" required="true"
+						requiredMessage="O campo natalidade não deve ser nulo" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Data de nascimento *</label>
+					<p:calendar id="dtAbertura" value="#{alunoMB.aluno.dataNascimento}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de nascimento não deve ser nulo" />
+
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-6">
+					<label>Nome Pai *</label>
+					<p:inputText title="NomePai" styleClass="col-md-12" id="nomePai"
+						alt="nomePai" value="#{alunoMB.aluno.nomePai}" required="true"
+						requiredMessage="O campo Nome Pai não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Nome Mãe *</label>
+					<p:inputText title="NomeMãe" styleClass="col-md-12" id="nomeMae"
+						alt="nomeMae" value="#{alunoMB.aluno.nomeMae}" required="true"
+						requiredMessage="O campo nome mãe não deve ser nulo" />
+				</div>
+
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Telefone </label>
+					<p:inputText title="telefone" styleClass="col-md-12" id="telefone"
+						alt="telefone" value="#{alunoMB.aluno.telefone}" />
+				</div>
+
+				<div class="col-md-6">
+					<label>Celular </label>
+					<p:inputText title="Celular" styleClass="col-md-12" id="celular"
+						alt="celular" value="#{alunoMB.aluno.celular}" />
+				</div>
+
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Senha </label>
+					<p:password title="Senha" styleClass="col-md-12" id="senha"
+						feedback="true" promptLabel="Senha" weakLabel="Fraca"
+						validatorMessage="Senhas diferentes" goodLabel="Boa"
+						strongLabel="Forte" alt="senha" match="senha2"
+						value="#{alunoMB.aluno.senha}" required="true"
+						requiredMessage="O campo senha não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Repita a senha </label>
+					<p:password title="Senha" styleClass="col-md-12" id="senha2"
+						alt="repita a senha" value="#{alunoMB.aluno.senha}"
+						required="true" requiredMessage="O campo senha não deve ser nulo" />
+				</div>
+
+				<div class="col-md-12">
+					<label></label>
+					<p:commandButton value="Curso" alt="Sim"
+						actionListener="#{alunoMB.abrirCurso()}"
+						styleClass="ui-priority-primary" update=":dlgInformacao" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+
+		</h:form>
+		<div class="modal-footer">
+
+			<p:commandButton value="Cancelar" onclick="PF('dlgAluno').hide();"
+				alt="Cancelar" />
+		</div>
+
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+	<!-- DIALOG CURSO SALVAR -->
+	<p:dialog header="Aluno" widgetVar="dlgAlunoCurso" modal="true"
+		id="dlgAlunoCurso" closable="true" closeOnEscape="true"
+		resizable="false" draggable="false" responsive="true" width="60%">
+		<h:form id="frmModalSalvarCurso">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>RA *</label>
+					<p:inputText title="RA" styleClass="col-md-12" id="ra" alt="ra"
+						value="#{alunoMB.alunoTurma.ra}" required="true"
+						requiredMessage="O campo ra não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-11  col-xs-10">
+					<label>Turma *</label>
+					<p:autoComplete id="turma" dropdown="true" scrollHeight="170"
+						value="#{alunoMB.alunoTurma.turma}"
+						completeMethod="#{alunoMB.completarTurma}" forceSelection="true"
+						converter="#{converterTurma}" var="tur" itemLabel="#{tur}"
+						itemValue="#{tur}" required="true"
+						requiredMessage="O campo turma não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Data de mudança *</label>
+					<p:calendar id="dtModificao" alt="Data de modificação"
+						title="Data de modificação" pattern="dd/MM/yyyy"
+						value="#{alunoMB.alunoTurma.dataMudanca}" mask="true"
+						required="true"
+						requiredMessage="O campo data Modificação não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Justificativa </label>
+					<p:inputText title="Justificativa" styleClass="col-md-12"
+						id="justificativa" alt="Justificativa"
+						value="#{alunoMB.alunoTurma.justificativa}" />
+				</div>
+				<label></label>
+				<p:commandButton value="Incluir" styleClass="ui-priority-primary"
+					alt="Sim" actionListener="#{alunoMB.adicionarTurma()}"
+					update=":frmModalSalvarCurso :frmModalCurso :dlgInformacao  " />
+
+
+
+			</div>
+		</h:form>
+		<h:form id="frmModalCurso">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label></label>
+					<p:dataTable id="tabela" resizableColumns="true" reflow="true"
+						rows="10" paginator="true" paginatorPosition="bottom"
+						value="#{alunoMB.listAlunoTurma}"
+						emptyMessage="Nenhum administrador cadastrado" var="lis"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Curso" filterMatchMode="contains">
+							<h:outputText value="#{lis.turma.curso.nome}" />
+						</p:column>
+						<p:column headerText="Turma" filterMatchMode="contains">
+							<h:outputText value="#{lis.turma.descricao}" />
+						</p:column>
+						<p:column headerText="RA" filterMatchMode="contains">
+							<h:outputText value="#{lis.ra}" />
+						</p:column>
+
+						<p:column headerText="Remover" style="width:100px">
+							<p:commandButton actionListener="#{alunoMB.tirarCurso(lis)}"
+								icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+								update=":frmModalSalvarCurso :frmModalCurso" alt="Excluir">
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+		</h:form>
+		<div class="modal-footer">
+			<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+				alt="Sim" actionListener="#{alunoMB.salvar()}"
+				update=":dlgInformacao :frmTabela" />
+
+			<p:commandButton value="Voltar" onclick="PF('dlgAlunoCurso').hide();"
+				alt="Voltar" />
+		</div>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR CURSO -->
+
+	<!-- DIALOG DETALHES -->
+	<p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true"
+		closeOnEscape="true" resizable="false" closable="true"
+		draggable="false">
+		<p:outputPanel id="alunoDetalhe">
+			<h:form id="frmDetalhesAluno">
+				<h:panelGrid columns="2">
+					<label>Nome: </label>
+					<h:outputText value="#{alunoMB.movimentacao.alunoTurma.aluno.nome}" />
+
+					<label>RA: </label>
+					<h:outputText value="#{alunoMB.movimentacao.alunoTurma.ra}" />
+
+					<label>E-mail: </label>
+					<h:outputText
+						value="#{alunoMB.movimentacao.alunoTurma.aluno.usuario}" />
+					<label>Curso: </label>
+					<h:outputText
+						value="#{alunoMB.movimentacao.alunoTurma.turma.descricao}" />
+
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+
+	<!-- DIALOG INATIVAR -->
+	<p:dialog header="Inativar" widgetVar="dlgInativar" modal="true"
+		closeOnEscape="true" resizable="false" closable="true"
+		draggable="false">
+		<p:outputPanel id="trancamento">
+			<h:form id="frmTrancamento">
+				<div class="ui-fluid">
+					<div class="col-md-11  col-xs-10">
+						<label>Situação: * </label>
+						<p:selectOneMenu id="console" required="true"
+							requiredMessage="O campo situação não deve ser nulo"
+							value="#{alunoMB.auxMovimentacao.situacao}">
+							<f:selectItem itemLabel="Trancamento" itemValue="2" />
+							<f:selectItem itemLabel="Cancelamento" itemValue="3" />
+							<f:selectItem itemLabel="Abandono" itemValue="4" />
+							<f:selectItem itemLabel="Concluiu" itemValue="5" />
+							<f:selectItem itemLabel="Transferência" itemValue="6" />
+						</p:selectOneMenu>
+					</div>
+				</div>
+				<div class="ui-fluid">
+					<div class="col-md-11  col-xs-10">
+						<label>Data de inativação: * </label>
+						<p:calendar id="dtTrancamento" alt="Data de trancamento"
+							title="Data de trancamento" pattern="dd/MM/yyyy" mask="true"
+							value="#{alunoMB.auxMovimentacao.dataMovimentacao}"
+							required="true"
+							requiredMessage="O campo data de inativação não deve ser nulo" />
+					</div>
+				</div>
+
+				<small>Campos obrigatatórios *</small>
+				<div class="modal-footer">
+					<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+						alt="Sim" actionListener="#{alunoMB.inativarMovimentacoes()}"
+						update=":dlgInformacao :frmTabela :frmModalSalvarCurso" />
+
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgInativar').hide();" alt="Cancelar" />
+				</div>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG INATIVAR -->
+
+	<!-- DIALOG ATIVAR -->
+	<p:dialog header="Ativar" widgetVar="dlgAtivar" modal="true"
+		closeOnEscape="true" resizable="false" closable="true"
+		draggable="false">
+		<p:outputPanel id="destancar">
+			<h:form id="frmAtivar">
+				<h:panelGrid columns="1">
+					<label>Data de destrancamento: * </label>
+					<p:calendar id="dtDestrancamento" alt="Data de destrancamento"
+						title="Data de destrancamento"
+						value="#{alunoMB.auxMovimentacao.dataMovimentacao}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de destrancamento não deve ser nulo" />
+				</h:panelGrid>
+				<small>Campos obrigatatórios *</small>
+				<div class="modal-footer">
+					<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+						alt="Sim" actionListener="#{alunoMB.ativar()}"
+						update=":dlgInformacao :frmTabela" />
+
+					<p:commandButton value="Cancelar" onclick="PF('dlgAtivar').hide();"
+						alt="Cancelar" />
+				</div>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG ATIVAR -->
+
+	<!-- DIALOG SALVAR Editar -->
+	<p:dialog header="Aluno" widgetVar="dlgAlunoEditarDados" modal="true"
+		id="dlgAlunoEditarDados" closable="true" closeOnEscape="true"
+		resizable="false" draggable="true" responsive="true" width="60%">
+		<h:form id="frmModalSalvarEditarDados">
+
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Nome *</label>
+					<p:inputText title="Nome" styleClass="col-md-12" id="nomeEditar"
+						value="#{alunoMB.aluno.nome}" alt="nome" required="true"
+						requiredMessage="O campo nome não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>E-mail *</label>
+					<p:inputText title="E-mail" styleClass="col-md-12" id="emailEditar"
+						alt="nome" value="#{alunoMB.aluno.usuario}" required="true"
+						requiredMessage="O campo e-mail não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-4">
+					<label>CPF *</label>
+					<p:inputMask title="cpf" styleClass="col-md-12" id="cpf" alt="cpf"
+						value="#{alunoMB.aluno.cpf}" required="true" mask="999.999.999-99"
+						requiredMessage="O campo cpf não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>RG *</label>
+					<p:inputText title="rg" styleClass="col-md-12" id="rg" alt="rg"
+						value="#{alunoMB.aluno.rg}" required="true"
+						requiredMessage="O campo rg não deve ser nulo" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Orgão emissor *</label>
+					<p:inputText title="emissor" styleClass="col-md-12" id="emissor"
+						alt="emissor" value="#{alunoMB.aluno.orgaoRg}" required="true"
+						requiredMessage="O campo orgão emissor não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-4">
+					<label>Sexo*</label>
+					<p:selectOneRadio id="sexo" value="#{alunoMB.aluno.sexo}">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+
+						<f:selectItem itemLabel="Feminino" itemValue="F" />
+					</p:selectOneRadio>
+				</div>
+				<div class="col-md-4">
+					<label>Natalidade *</label>
+					<p:inputText title="natalidade" styleClass="col-md-12"
+						id="natalidade" alt="natalidade"
+						value="#{alunoMB.aluno.natalidade}" required="true"
+						requiredMessage="O campo natalidade não deve ser nulo" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Data de nascimento *</label>
+					<p:calendar id="dtAbertura" value="#{alunoMB.aluno.dataNascimento}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de nascimento não deve ser nulo" />
+
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-6">
+					<label>Nome Pai *</label>
+					<p:inputText title="NomePai" styleClass="col-md-12" id="nomePai"
+						alt="nomePai" value="#{alunoMB.aluno.nomePai}" required="true"
+						requiredMessage="O campo Nome Pai não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Nome Mãe *</label>
+					<p:inputText title="NomeMãe" styleClass="col-md-12" id="nomeMae"
+						alt="nomeMae" value="#{alunoMB.aluno.nomeMae}" required="true"
+						requiredMessage="O campo nome mãe não deve ser nulo" />
+				</div>
+
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Telefone </label>
+					<p:inputText title="telefone" styleClass="col-md-12" id="telefone"
+						alt="telefone" value="#{alunoMB.aluno.telefone}" />
+				</div>
+
+				<div class="col-md-6">
+					<label>Celular </label>
+					<p:inputText title="Celular" styleClass="col-md-12" id="celular"
+						alt="celular" value="#{alunoMB.aluno.celular}" />
+				</div>
+
+				<div class="col-md-12">
+					<label></label>
+				</div>
+
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+			<div class="modal-footer">
+
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					alt="Sim" actionListener="#{alunoMB.salvarEditar()}"
+					update=":dlgInformacao :frmTabela" />
+
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgAlunoEditarDados').hide();" alt="Cancelar" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+
+
+
+
+
+
+
+	<!-- DIALOG SALVAR Editar data mudança-->
+	<p:dialog header="Aluno" widgetVar="dlgAlunoEditarData" modal="true"
+		id="dlgAlunoEditarData" closable="true" closeOnEscape="true"
+		resizable="false" draggable="true" responsive="true" width="60%">
+		<h:form id="frmModalSalvarEditarData">
+
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Nome *</label>
+					<p:inputText title="Nome" styleClass="col-md-12" id="nomeEditar"
+						value="#{alunoMB.alunoTurmaAltera.aluno.nome}" alt="nome"
+						required="true" requiredMessage="O campo nome não deve ser nulo" />
+				</div>
+
+
+				<div class="col-md-12">
+					<label>Data Mudança *</label>
+					<p:calendar title="data" styleClass="col-md-12"
+						id="emailEditarData" pattern="dd/MM/yyyy" alt="nomeData"
+						value="#{alunoMB.alunoTurmaAltera.dataMudanca}" required="true"
+						requiredMessage="O campo e-mail não deve ser nulo" />
+				</div>
+			</div>
+
+
+
+
+			<div class="modal-footer">
+
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					alt="Sim" actionListener="#{alunoMB.editarData()}"
+					update=":dlgInformacao :frmTabela" />
+
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgAlunoEditarData').hide();" alt="Cancelar" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR Data mudança-->
+
+
+
+
+
+
+	<!-- DIALOG CURSO SALVAR -->
+	<p:dialog header="Aluno" widgetVar="dlgAlunoCursoEditar" modal="true"
+		id="dlgAlunoCursoEditar" closable="true" closeOnEscape="true"
+		resizable="false" draggable="false" responsive="true" width="60%">
+		<h:form id="frmModalEditarCurso">
+			<div class="ui-fluid">
+
+
+				<div class="col-md-1">
+					<label>Aluno: </label>
+				</div>
+				<div class="col-md-11">
+
+					<p:outputLabel title="Nome" styleClass="col-md-12"
+						id="nomeEditarCurso" value="#{alunoMB.aluno.nome}" alt="nome"
+						required="true" requiredMessage="O campo nome não deve ser nulo" />
+				</div>
+
+
+				<div class="col-md-12">
+					<label>RA *</label>
+					<p:inputText title="RA" styleClass="col-md-12" id="ra" alt="ra"
+						value="#{alunoMB.alunoTurma.ra}" required="true"
+						requiredMessage="O campo ra não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-11  col-xs-10">
+					<label>Turma *</label>
+					<p:autoComplete id="turma" dropdown="true" scrollHeight="170"
+						value="#{alunoMB.alunoTurma.turma}"
+						completeMethod="#{alunoMB.completarTurma}" forceSelection="true"
+						converter="#{converterTurma}" var="tur" itemLabel="#{tur}"
+						itemValue="#{tur}" required="true"
+						requiredMessage="O campo turma não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Data de mudança *</label>
+					<p:calendar id="dtModificao" alt="Data de modificação"
+						title="Data de modificação" pattern="dd/MM/yyyy"
+						value="#{alunoMB.alunoTurma.dataMudanca}" mask="true"
+						required="true"
+						requiredMessage="O campo data Modificação não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Justificativa </label>
+					<p:inputText title="Justificativa" styleClass="col-md-12"
+						id="justificativa" alt="Justificativa"
+						value="#{alunoMB.alunoTurma.justificativa}" />
+				</div>
+				<label></label>
+				<p:commandButton value="Incluir" styleClass="ui-priority-primary"
+					alt="Sim" actionListener="#{alunoMB.salvarTurma()}"
+					update=":frmTabela :frmModalEditarCurso :frmModalEditarCurso:tabela :dlgInformacao" />
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label></label>
+					<p:dataTable id="tabela" resizableColumns="true" reflow="true"
+						rows="10" paginator="true" paginatorPosition="bottom"
+						value="#{alunoMB.listAlunoTurma}"
+						emptyMessage="Nenhum administrador cadastrado" var="lis"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Curso" filterMatchMode="contains">
+							<h:outputText value="#{lis.turma.curso.nome}" />
+						</p:column>
+						<p:column headerText="Turma" filterMatchMode="contains">
+							<h:outputText value="#{lis.turma.descricao}" />
+						</p:column>
+						<p:column headerText="RA" filterMatchMode="contains">
+							<h:outputText value="#{lis.ra}" />
+						</p:column>
+
+						<p:column headerText="Inativar" style="width:100px">
+							<p:commandButton title="Inativar" alt="Inativar"
+								styleClass="btn btn-block" onclick="PF('dlgInativar').show();"
+								icon="ui-icon-locked">
+
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+		</h:form>
+		<div class="modal-footer">
+			<p:commandButton value="Finalizar" styleClass="ui-priority-primary"
+				alt="Sim" update=":frmTabela :dlgInformacao"
+				actionListener="#{alunoMB.preencherListaAlunos()}"
+				onclick="PF('dlgAlunoCursoEditar').hide();" />
+
+			<p:commandButton value="Cancelar"
+				onclick="PF('dlgAlunoCursoEditar').hide();" alt="cancelar" />
+		</div>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR CURSO -->
+
+
+
+
+
+	<!-- DIALOG CURSO SALVAR -->
+	<p:dialog header="Aluno - Senha" widgetVar="dlgAlunoEditarSenha"
+		modal="true" id="dlgAlunoEditarSenha" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false"
+		responsive="true" width="60%">
+		<h:form id="frmModalEditarSenha">
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>Nome : </label>
+				</div>
+				<div class="col-md-12">
+					<h:outputText title="Nome" styleClass="col-md-12"
+						id="nomeEditarSenha" value="#{alunoMB.aluno.nome}" alt="nome" />
+				</div>
+
+				<div class="col-md-6">
+					<label>Senha *</label>
+					<p:password title="Senha" styleClass="col-md-12" id="Editarsenha1"
+						feedback="true" promptLabel="Senha" weakLabel="Fraca"
+						validatorMessage="Senhas diferentes" goodLabel="Boa"
+						strongLabel="Forte" alt="senha" match="EditarSenha21"
+						value="#{alunoMB.aluno.senha}" required="true"
+						requiredMessage="o campo senha não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Repita a senha *</label>
+					<p:password title="Senha" styleClass="col-md-12" id="EditarSenha21"
+						alt="repita a senha" value="#{alunoMB.aluno.senha}"
+						required="true" requiredMessage="o campo senha não deve ser nulo" />
+				</div>
+			</div>
+			<div class="col-md-12">
+				<small>Campos obrigatórios *</small>
+			</div>
+
+			<div class="modal-footer">
+
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					alt="Sim" update=":frmTabela :dlgInformacao"
+					actionListener="#{alunoMB.salvarSenha()}" />
+
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgAlunoEditarSenha').hide();" alt="Cancelar" />
+			</div>
+
+		</h:form>
+	</p:dialog>
+
+</h:body>
+</html>
