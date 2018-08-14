@@ -71,7 +71,7 @@ public class ServicoHello {
 	// @Inject
 	// private Operacoes operacoes;
 	//
-	
+
 	private LocalInventario localInventario = new LocalInventario();
 
 	@Inject
@@ -407,7 +407,8 @@ public class ServicoHello {
 
 		for (EquipamentoInventario naoTombado : listaEquipamentoInventario) {
 
-			if (equipamento.getTombamento().getNumeroSerie().equals(naoTombado.getTombamento().getNumeroSerie())) {
+			if (equipamento.getTombamento().getNumeroSerie().equals(naoTombado.getTombamento().getNumeroSerie())
+					&& equipamento.getLocalInventario().getId() == naoTombado.getLocalInventario().getId()) {
 
 				return false;
 			}
