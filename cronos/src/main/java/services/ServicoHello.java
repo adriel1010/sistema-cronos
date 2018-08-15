@@ -392,6 +392,7 @@ public class ServicoHello {
 			}
 			if(excluir)
 				l.setStatus(false);
+				l.setDataRemovido(new Date());
 				equipamentoInventarioService.inserirAlterar(l);
 		}	
 

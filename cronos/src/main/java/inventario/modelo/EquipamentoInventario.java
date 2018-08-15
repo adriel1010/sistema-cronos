@@ -36,6 +36,10 @@ public class EquipamentoInventario implements Serializable {
 	 
 	@Temporal(TemporalType.DATE)
 	private Date dataConferencia;
+	
+	
+	@Temporal(TemporalType.DATE)
+	private Date dataRemovido;
 	    
 
     private boolean status;
@@ -58,12 +62,14 @@ public class EquipamentoInventario implements Serializable {
 
 
 
+	public Date getDataRemovido() {
+		return dataRemovido;
+	}
 
 
-
-
-
-
+	public void setDataRemovido(Date dataRemovido) {
+		this.dataRemovido = dataRemovido;
+	}
 
 
 

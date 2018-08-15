@@ -303,6 +303,31 @@ public class RelatorioIventarioMB implements Serializable {
 		}
 	}
 	
+	public void imprimirRelatorioBensRemovidos() {
+		 
+		try {
+			List<EquipamentoInventario> equipamentoInventario = daoEquipamentoInventario.listarCodicaoLivre(EquipamentoInventario.class,
+					" status is false and localInventario.Inventario.id ='" + inventario.getId()+"'");
+
+			if (equipamentoInventario.size()>0) {
+				 
+
+				HashMap parametro = new HashMap<>();
+				parametro.put("IDINVENTARIO", inventario.getId());
+				ChamarRelatorio ch = new ChamarRelatorio("bensRemovido.jasper", parametro,
+						"relatório_" + "Bens conferidos e removidos ");
+				Session sessions = manager.unwrap(Session.class);
+				sessions.doWork(ch);
+
+			} else {
+				ExibirMensagem.exibirMensagem(Mensagem.NADA_ENCONTRADO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			ExibirMensagem.exibirMensagem(Mensagem.ERRO);
+		}
+	}
+	
 	
 	public void imprimirRelatorioBensTombadosPorLocalidade() {
 		 

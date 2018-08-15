@@ -290,6 +290,29 @@
 						</div>
 					</h:form>
 				</p:tab>
+				
+				<p:tab title="BENS CONFERIDOS E REMOVIDOS">
+					<h:form id="remv">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="removid" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensRemovidos()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
 
 			</p:tabView>
 		</ui:define>
