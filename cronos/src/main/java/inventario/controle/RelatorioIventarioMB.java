@@ -109,7 +109,7 @@ public class RelatorioIventarioMB implements Serializable {
 
 				HashMap parametro = new HashMap<>();
 				parametro.put("IDINVENTARIO", inventario.getId());
-				ChamarRelatorio ch = new ChamarRelatorio("bensTombadosGeral.jasper", parametro,
+				ChamarRelatorio ch = new ChamarRelatorio("bensTombadosGeralOutro.jasper", parametro,
 						"relatório_" + "Relatório de Bens Geral ");
 				Session sessions = manager.unwrap(Session.class);
 				sessions.doWork(ch);
@@ -135,7 +135,7 @@ public class RelatorioIventarioMB implements Serializable {
 
 				HashMap parametro = new HashMap<>();
 				parametro.put("IDLOCALINVENTARIO", inventario.getId());
-				ChamarRelatorio ch = new ChamarRelatorio("bensNaoTombadosGeral.jasper", parametro,
+				ChamarRelatorio ch = new ChamarRelatorio("bensNaoTombadosGeralNovo.jasper", parametro,
 						"relatório_" + "BENS NÃO TOMBADOS - RELATÓRIO GERAL ");
 				Session sessions = manager.unwrap(Session.class);
 				sessions.doWork(ch);
