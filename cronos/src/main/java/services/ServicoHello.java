@@ -399,6 +399,7 @@ public class ServicoHello {
 		return "";
 
 	}
+	
 
 	public boolean cadastraNaoTombado(EquipamentoInventario equipamento) {
 
@@ -408,7 +409,7 @@ public class ServicoHello {
 
 		for (EquipamentoInventario naoTombado : listaEquipamentoInventario) {
 
-			if (equipamento.getTombamento().getNumeroSerie().equals(naoTombado.getTombamento().getNumeroSerie())
+			if (equipamento.getTombamento().getEspecificacao().equals(naoTombado.getTombamento().getEspecificacao())
 					&& equipamento.getLocalInventario().getId() == naoTombado.getLocalInventario().getId()) {
 
 				return false;
