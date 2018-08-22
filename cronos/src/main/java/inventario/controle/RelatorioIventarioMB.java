@@ -150,6 +150,10 @@ public class RelatorioIventarioMB implements Serializable {
 	}
 	
 	
+	
+
+	
+	
 	public void imprimirRelatorioBensTombadoNaoLocalizado() {
 		 
 		try {
