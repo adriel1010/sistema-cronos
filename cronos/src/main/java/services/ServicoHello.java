@@ -324,10 +324,15 @@ public class ServicoHello {
 
 						e.setDataConferencia(retornaData(e.getDataConferenciaFormatada()));
 
-						if (e.getLocalInventario().getLocal().getId() == t.getLocal().getId())
+						if ((e.getLocalInventario().getLocal().getId() == t.getLocal().getId()) || (e.getLocalInventario().getLocal().getId().equals(t.getLocal().getId())))
 							e.setPertenceLocal(true);
 						else
 							e.setPertenceLocal(false);
+						
+						
+						System.out.println("id do local do equipamento web = "+e.getLocalInventario().getLocal().getId());
+						System.out.println("id do local do Tombamento = "+t.getLocal().getId());
+
 
 						e.setTombamento(t);
 

@@ -187,7 +187,15 @@
 									<p:confirm header="Confirmação" message="Deseja excluir?" />
 								</p:commandButton>
 							</p:column>
-
+							
+							<p:column headerText="Limpar Equi." style="width:68px">
+								<p:commandButton alt="excluir" styleClass="btn btn-block"
+									update=":frmTabelaLocais" icon="ui-icon-trash"
+									actionListener="#{inventarioMB.limparLocalInventario(obj)}">
+									<p:confirm header="Confirmação" message="Deseja limpar todos os equipamentos desse local?" />
+								</p:commandButton>
+							</p:column>
+*
 						</p:dataTable>
 					</h:form>
 				</div>

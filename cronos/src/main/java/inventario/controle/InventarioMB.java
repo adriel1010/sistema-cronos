@@ -28,6 +28,7 @@ import inventario.modelo.Inventario;
 import inventario.modelo.Localidades;
 import inventario.modelo.LocalInventario;
 import inventario.modelo.Tombamento;
+import inventario.service.EquipamentoInventarioService;
 import inventario.service.InventarioService;
 import inventario.service.LocaisInventarioService;
 import inventario.service.LocalService;
@@ -73,6 +74,9 @@ public class InventarioMB implements Serializable {
 
 	@Inject
 	private LocaisInventarioService locaisInventarioService;
+	
+	@Inject
+	private EquipamentoInventarioService equipamentoInventarioService;
 
 	@PostConstruct
 	public void inicializar() {
@@ -247,6 +251,23 @@ public class InventarioMB implements Serializable {
 		try {
 			local.setStatus(false);
 			locaisInventarioService.inserirAlterar(local);
+			ExibirMensagem.exibirMensagem(Mensagem.SUCESSO);
+		} catch (Exception e) {
+			ExibirMensagem.exibirMensagem(Mensagem.ERRO);
+		}
+		buscarLocaisInventario(local.getInventario());
+		
+	}
+	
+	public void limparLocalInventario(LocalInventario local) {
+		try {
+			
+			List<EquipamentoInventario> listEquipamentoLimpa = new ArrayList<>();
+			listEquipamentoLimpa = daoEquipamentoInventario.listarCodicaoLivre(EquipamentoInventario.class, " localInventario = '"+local.getId()+"'");
+			
+			for(EquipamentoInventario e : listEquipamentoLimpa){
+				 equipamentoInventarioService.remover(e);
+			} 
 			ExibirMensagem.exibirMensagem(Mensagem.SUCESSO);
 		} catch (Exception e) {
 			ExibirMensagem.exibirMensagem(Mensagem.ERRO);
