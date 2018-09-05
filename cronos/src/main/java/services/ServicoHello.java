@@ -257,8 +257,7 @@ public class ServicoHello {
 			// sido conferido ele insere
 			for (EquipamentoInventario equipamento : listaEquipamentoInventario) {
 
-				System.out.println("equipamento " + e.getTombamento().getCodigo());
-
+ 
 				if (equipamento.getTombamento().getCodigo().toString().equals(e.getTombamento().getCodigo().toString())
 
 						&& ((equipamento.getLocalInventario().getInventario().getId() == e.getLocalInventario()
@@ -279,8 +278,7 @@ public class ServicoHello {
 
 			}
 			
-			System.out.println("valor "+salvar);
- 
+			 
 
 			if (e.getTombamento().getCodigo().equals(""))
 				salvar = true;
@@ -391,7 +389,7 @@ public class ServicoHello {
 			boolean excluir = true;
 			for(EquipamentoInventario web : listasConvertida){ 
 				if(web.getTombamento().getCodigo().equals(l.getTombamento().getCodigo())){
-					System.out.println("não vai excluir "+web.getId());
+					
 					excluir = false;
 				}
 				 
