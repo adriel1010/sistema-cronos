@@ -266,9 +266,11 @@ public class ServicoHello {
 								|| (equipamento.getLocalInventario().getInventario().getId()
 										.equals(e.getLocalInventario().getInventario().getId())))
 
-						&& equipamento.getLocalInventario().getLocal().getId() == e.getLocalInventario().getLocal()
-								.getId()
+						&& ( (equipamento.getLocalInventario().getLocal().getId() == e.getLocalInventario().getLocal()
+								.getId()) || (equipamento.getLocalInventario().getLocal().getId().equals(e.getLocalInventario().getLocal().getId())) )
 
+						
+						
 						&& equipamento.isStatus() == true) {
 
 					salvar = false;
@@ -276,6 +278,8 @@ public class ServicoHello {
  
 
 			}
+			
+			System.out.println("valor "+salvar);
  
 
 			if (e.getTombamento().getCodigo().equals(""))
@@ -330,9 +334,6 @@ public class ServicoHello {
 							e.setPertenceLocal(false);
 						
 						
-						System.out.println("id do local do equipamento web = "+e.getLocalInventario().getLocal().getId());
-						System.out.println("id do local do Tombamento = "+t.getLocal().getId());
-
 
 						e.setTombamento(t);
 
